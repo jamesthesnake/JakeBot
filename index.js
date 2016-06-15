@@ -29,6 +29,11 @@ var express = require('express')
 		continue
 
 	    }
+	    if(text=="I am an ex-lover"){
+	    	sendExLoverMessage(sender)
+	    	continue
+	    	
+	    }
 
 
 
@@ -103,6 +108,13 @@ var express = require('express')
 			}]
 		}
 	    }
+	}
+	function sendExLoverMessage(sender){
+		messageData={
+			text:"hello ex-lover"
+			
+		}	
+	}
 	}
 	request({
 		url: 'https://graph.facebook.com/v2.6/me/messages',
