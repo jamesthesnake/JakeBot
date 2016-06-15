@@ -5,61 +5,57 @@ var express = require('express')
 
     app.set('port', (process.env.PORT || 5000))
 
-    // Process application/x-www-form-urlencoded
+    // parse application/x-www-form-urlencoded
     app.use(bodyParser.urlencoded({extended: false}))
 
-    // Process application/json
+    // parse application/json
     app.use(bodyParser.json())
 
-    // Index route
+    // index
     app.get('/', function (req, res) {
-	    res.send('Hello world, I am a chat bot')
+	    res.send('hello world i am a secret bot')
 	})
 
-    // for Facebook verification
-    app.post('/webhook/', function (req, res) {
- messaging_events = req.body.entry[0].messaging
- for (i = 0; i < messaging_events.length; i++) {
-        event = req.body.entry[0].messaging[i]
-        sender = event.sender.id
-        if (event.message && event.message.text) {
-            text = event.message.text
-	    if(text== "Generic"){
-		sendGenericMessage(sender)
-		continue
-
-	    }
-	    if(text=="I am an ex-lover"){
-	    	sendExLoverMessage(sender)
-	    	continue
-	    	
-	    }
-
-
-
-            sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200))
-	    if(event.postback){
-		text = JSON.stringify(event.postback)
-		sendTextMessage(sender, "Postback recieved : " +text.substring(0,200),token)
-		continue 
-	    }
- 
- }
- res.sendStatus(200)
- })
-	app.get('/webhook/',function(req,res){
+    // for facebook verification
+    app.get('/webhook/', function (req, res) {
 	    if (req.query['hub.verify_token'] === 'my_voice_is_my_password_verify_me') {
 		res.send(req.query['hub.challenge'])
 	    }
 	    res.send('Error, wrong token')
 	})
-    var token ="CAAPZBirCKPmIBAAbyFDh1BXDRKsD4ZBpHnPudK6wjiRr0L9UWEZBbvWnlZAD7kdf2jGy164snpRCUlWyRiDZAZArMJRiwQDl5QqBxTvQdWPkaEMO3N3ZCP2DOIlT9du6GvZAmf4gzMByVhnvtzZA2xmgsjreghZA6ZARvGEd2yzM3Vyj5daM256IlZCavNPb5oGM2T5ujPcCPjv4ywZDZD"
 
-    // Spin up the server
-   
+    // to post data
+    app.post('/webhook/', function (req, res) {
+	    messaging_events = req.body.entry[0].messaging
+	    for (i = 0; i < messaging_events.length; i++) {
+		event = req.body.entry[0].messaging[i]
+		sender = event.sender.id
+		if (event.message && event.message.text) {
+		    text = event.message.text
+		    if (text === 'Generic') {
+			sendGenericMessage(sender)
+			continue
+		    }
+		    else if(text == 'whats up'){
+			sendHiMessage(sender)
+			continue 
+		    }
+		    sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200))
+		}
+		if (event.postback) {
+		    text = JSON.stringify(event.postback)
+		    sendTextMessage(sender, "Postback received: "+text.substring(0, 200), token)
+		    continue
+		}
+	    }
+	    res.sendStatus(200)
+	})
+
+var token = "CAAPZBirCKPmIBAAZAO5LupF9o9qv7DCozG1pf5kRVKZAgwOC1Hss6CifYtoH7e5nrbEGitBWcFi75I02zL4cnHkCRwLb0lpVrnZBz00V2amZC4sxj429E5KZAijRZCd1PSvI6yd5gLDvB7mOxbwZCaw2tIIDu1DZBH9MzAfpdWPr7WqLC05WxBuZAyvC4aB9L8n3ZBSIrPldVPRpgZDZD"
+
     function sendTextMessage(sender, text) {
     messageData = {
-        text:text
+	text:text
     }
     request({
 	    url: 'https://graph.facebook.com/v2.6/me/messages',
@@ -76,7 +72,28 @@ var express = require('express')
 		console.log('Error: ', response.body.error)
 	    }
 	})
-	}
+}
+    function sendHiMessage(sender){
+	messageData={
+	    text:"fuck you"
+    }
+	request({
+		url: 'https://graph.facebook.com/v2.6/me/messages',
+		    qs: {access_token:token},
+		    method: 'POST',
+		    json: {
+		    recipient: {id:sender},
+			message: messageData,
+			}
+	    }, function(error, response, body) {
+		if (error) {
+		    console.log('Error sending messages: ', error)
+			} else if (response.body.error) {
+		    console.log('Error: ', response.body.error)
+			}
+	    })
+
+    }
     function sendGenericMessage(sender) {
 	messageData = {
 	    "attachment": {
@@ -109,13 +126,6 @@ var express = require('express')
 		}
 	    }
 	}
-	function sendExLoverMessage(sender){
-		messageData={
-			text:"hello ex-lover"
-			
-		}	
-	}
-	}
 	request({
 		url: 'https://graph.facebook.com/v2.6/me/messages',
 		    qs: {access_token:token},
@@ -132,6 +142,8 @@ var express = require('express')
 			}
 	    })
 	    }
-	app.listen(app.get('port'), function() {
-		console.log('running on port', app.get('port'))
+
+// spin spin sugar
+app.listen(app.get('port'), function() {
+	console.log('running on port', app.get('port'))
 	    })
