@@ -4,6 +4,7 @@ import datetime
 import csv
 import time
 
+#created by @minimaxr
 app_id =
 app_secret = 
 group_id = "759985267390294"
