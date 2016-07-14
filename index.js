@@ -15,7 +15,7 @@ var express = require('express')
     app.get('/', function (req, res) {
 	    res.send('hello world i am a secret bot')
 	})
-
+//add a hashtable to easy communciate
     // for facebook verification
     app.get('/webhook/', function (req, res) {
 	    if (req.query['hub.verify_token'] === 'my_voice_is_my_password_verify_me') {
