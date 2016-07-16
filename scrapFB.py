@@ -8,7 +8,7 @@ import time
 app_id =
 app_secret = 
 group_id = "759985267390294"
-
+#scrap Fb
 access_token = app_id + "|" + app_secret
 
 def request_until_succeed(url):
